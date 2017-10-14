@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.0;
 
 contract SmartAd {
 
@@ -19,6 +19,7 @@ contract SmartAd {
 
     struct Publisher {
         bool onboarded;
+        uint[] campaigns;
         address[] clients;
     }
 
@@ -26,7 +27,6 @@ contract SmartAd {
     /***************************
      * Mapping
     ***************************/
-    //mapping(address => Campaign) public campaign;
 
     /***************************
      * Validation
@@ -43,6 +43,16 @@ contract SmartAd {
 
     modifier canPayoutAdv(uint id) {
         require(campaign[id].balance >= FRACTION_ADVERTISER);
+        _;
+    }
+
+    modifier ownerOnly(uint id) {
+        require(campaign[id].owner == msg.sender);
+        _;
+    }
+
+    modifier enoughFunds(uint id, uint withdrawAmount) {
+        require(campaign[id].balance >= withdrawAmount);
         _;
     }
 
@@ -90,15 +100,28 @@ contract SmartAd {
         viewer.transfer(FRACTION_VIEWER);
     }
 
-    /// Method to onboard publisher, method is executed by owner
-    /// of the marketing campaign
-    function onboardPublisher(uint id, address publisher)
-             public
-             activeCampaign(id)
-             {
-        // Onboard the publisher
-        campaign[id].publishers[publisher].onboarded = true;
+    /// Method to onboard publisher, executed by publisher
+    function onboardPublisher(uint[] id)
+             public {
+        // Onboard the publisher by iterating thru all selected campaigns to join
+        for (uint i = 0; i < id.length; ++i) {
+            campaign[id[i]].publishers[msg.sender].onboarded = true;
+            campaign[id[i]].publishers[msg.sender].campaigns.push(i);
+        }
     }
+
+    /// Method to get a list of campaigns where publisher is participating
+    /*
+    function getInvolvedCampaings()
+             public
+             constant
+             returns(uint[]) {
+        // Return the list of campaigns where publisher is involved in
+        for (uint i = 0; i < campaign.length; ++i) {
+            if (campaign[i].publishers[msg.sender].onboarded == true;)
+        }
+    }
+    */
 
     /// Method that returns all the indexes of campaigns
     function getAllCampaings()
@@ -117,5 +140,31 @@ contract SmartAd {
         // Return span of variables that represent the specific
         // marketing campaign
         return(id, campaign[id].active, campaign[id].name, campaign[id].balance);
+    }
+
+    /// Method to withdraw funds from the contract if you are the owner
+    function withdrawCampaignFunds(uint id, uint withdrawAmount)
+             public
+             ownerOnly(id)
+             enoughFunds(id, withdrawAmount)
+             payable
+             returns (uint) {
+        // Withdraw funds from balance
+        campaign[id].balance -= withdrawAmount;
+        // Transfer funds to owner of the campaign
+        campaign[id].owner.transfer(withdrawAmount);
+        // Return whats left on the balance of the contract
+        return campaign[id].balance;
+    }
+
+    /// Method to add funds from the contract if you are the owner
+    function addCampaignFunds(uint id)
+             public
+             payable
+             returns (uint) {
+        // Withdraw funds from balance
+        campaign[id].balance += msg.value;
+        // Return whats left on the balance of the contract
+        return campaign[id].balance;
     }
 }
