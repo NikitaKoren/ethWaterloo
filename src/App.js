@@ -12,6 +12,8 @@ import './css/open-sans.css'
 import './css/pure-min.css'
 import './App.css'
 
+import '../node_modules/grommet-css'
+
 class App extends Component {
   render() {
     const OnlyAuthLinks = VisibleOnlyAuth(() =>

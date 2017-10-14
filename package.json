@@ -48,6 +48,8 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
+    "grommet": "^1.8.3",
+    "grommet-css": "^1.6.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
