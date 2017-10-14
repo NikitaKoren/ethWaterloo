@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.15;
 
 contract SmartAd {
 
@@ -19,7 +19,6 @@ contract SmartAd {
 
     struct Publisher {
         bool onboarded;
-        uint[] campaigns;
         address[] clients;
     }
 
@@ -27,6 +26,7 @@ contract SmartAd {
     /***************************
      * Mapping
     ***************************/
+    mapping(address => uint[]) publishersWork;
 
     /***************************
      * Validation
@@ -104,24 +104,21 @@ contract SmartAd {
     function onboardPublisher(uint[] id)
              public {
         // Onboard the publisher by iterating thru all selected campaigns to join
-        for (uint i = 0; i < id.length; ++i) {
+        for (uint i = 0; i < id.length; i++) {
             campaign[id[i]].publishers[msg.sender].onboarded = true;
-            campaign[id[i]].publishers[msg.sender].campaigns.push(i);
+            publishersWork[msg.sender].push(id[i]);
         }
     }
 
     /// Method to get a list of campaigns where publisher is participating
-    /*
     function getInvolvedCampaings()
              public
              constant
              returns(uint[]) {
-        // Return the list of campaigns where publisher is involved in
-        for (uint i = 0; i < campaign.length; ++i) {
-            if (campaign[i].publishers[msg.sender].onboarded == true;)
-        }
+        // List of campaigns where publisher is involved in
+        return publishersWork[msg.sender];
     }
-    */
+
 
     /// Method that returns all the indexes of campaigns
     function getAllCampaings()
