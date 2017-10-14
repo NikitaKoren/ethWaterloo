@@ -11,12 +11,12 @@ function campaignInitialized(campaign) {
   };
 }
 
-export function initializeCampaign(name = "") {
+export function initializeCampaign({ name = "", balance }) {
   let web3 = store.getState().web3.web3Instance;
 
   // Double-check web3's status.
   if (typeof web3 !== "undefined") {
-    return function(dispatch) {
+    return function(dispatch, getState) {
       // Using truffle-contract we create the authentication object.
       const smartAd = contract(SmartAd);
       smartAd.setProvider(web3.currentProvider);
@@ -32,11 +32,28 @@ export function initializeCampaign(name = "") {
 
         smartAd.deployed().then(function(instance) {
           smartAdInstance = instance;
+          console.log(web3.toWei(balance, "ether"));
           smartAdInstance
-            .initializeCampaign(name, { from: coinbase, gas: 900000 })
-            .then(function(result) {
-              console.log(smartAdInstance, result);
-              dispatch(campaignInitialized({ name }));
+            .initializeCampaign(name, {
+              from: coinbase,
+              value: web3.toWei(balance, "ether"),
+              gas: 900000
+            })
+            .then(result => {
+              dispatch(
+                campaignInitialized({
+                  name,
+                  id: getState().campaigns.items.length,
+                  balance,
+                  active: true
+                })
+              );
+              const newBalance = getState().user.data.balance - balance;
+              console.log(newBalance);
+              dispatch({
+                type: "USER_UPDATED",
+                payload: { balance: newBalance }
+              });
             });
         });
       });

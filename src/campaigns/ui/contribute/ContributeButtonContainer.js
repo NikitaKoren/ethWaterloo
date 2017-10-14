@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import ContributeButton from "./ContributeButton";
+import ContributeForm from "./ContributeForm";
 import { initializeCampaign } from "./ContributeButtonActions";
 
 const mapStateToProps = (state, ownProps) => {
@@ -8,15 +8,14 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onClick: event => {
-      event.preventDefault();
-      dispatch(initializeCampaign());
+    onClick: payload => {
+      dispatch(initializeCampaign(payload));
     }
   };
 };
 
 const ContributeButtonContainer = connect(mapStateToProps, mapDispatchToProps)(
-  ContributeButton
+  ContributeForm
 );
 
 export default ContributeButtonContainer;
