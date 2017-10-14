@@ -143,7 +143,7 @@ contract SmartAd {
         }
     }
 
-    /// Method to withdraw funds from the contract if you are the owner
+    /// Method to withdraw funds from the contract [OWNER]
     function withdrawCampaignFunds(uint id, uint withdrawAmount)
              public
              ownerOnly(id)
@@ -158,7 +158,7 @@ contract SmartAd {
         return campaigns[id].balance;
     }
 
-    /// Method to add funds from the contract if you are the owner
+    /// Method to add funds to the contract
     function addCampaignFunds(uint id)
              public
              payable
@@ -200,7 +200,7 @@ contract SmartAd {
         return(id, campaigns[id].active, campaigns[id].name, campaigns[id].balance);
     }
 
-    /// Get info of specific campaign if you are the owner
+    /// Get info of specific campaign [OWNER]
     function getOwnerCampaign(uint id)
              public
              constant
@@ -229,7 +229,7 @@ contract SmartAd {
         return (adSlots[id].active, adSlots[id].name);
     }
 
-    /// Get info of specific campaign if you are the owner
+    /// Get info of specific campaign [OWNER]
     function getOwnerAdSlot(uint id)
              public
              constant
@@ -238,4 +238,24 @@ contract SmartAd {
         // Return info of specified ad slot
         return (adSlots[id].active, adSlots[id].name);
     }
+
+    /***************************
+     * Setters
+    ***************************/
+    /// Method to set campaign activity [OWNER]
+    function setCampaignActive(uint id, bool state)
+             public
+             ownerOnly(id) {
+        // Set the active state to the parameter passed
+        campaigns[id].active = state;
+    }
+
+    /// Method to set adSlots activity [OWNER]
+    function setAdSlotActive(uint id, bool state)
+             public
+             ownerOnly(id) {
+        // Set the active state to the parameter passed
+        adSlots[id].active = state;
+    }
+
 }
