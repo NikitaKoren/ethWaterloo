@@ -3,7 +3,6 @@ import CampaignList from "./CampaignList";
 import { loadAllCampaigns } from "./CampaignListActions";
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(state.campaigns.items);
   return {
     items: state.campaigns.items
   };

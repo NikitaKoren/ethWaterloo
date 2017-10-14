@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Heading from "grommet/components/Heading";
 import ContributeButtonContainer from "../../campaigns/ui/contribute/ContributeButtonContainer";
 import CampaignListContainer from "../../campaigns/ui/list/CampaignListContainer";
 
@@ -8,27 +9,13 @@ class Dashboard extends Component {
     authData = this.props;
   }
 
-  componentDidMount() {
-    console.log("componentDidMount");
-  }
-
   render() {
     return (
       <main className="container">
         <div className="pure-g">
           <div className="pure-u-1-1">
-            <h1>Dashboard</h1>
-            <p>
-              <strong>Congratulations {this.props.authData.name}!</strong> If
-              you're seeing this page, you've logged in with your own smart
-              contract successfully.
-            </p>
+            <Heading align="center">Dashboard</Heading>
             <ContributeButtonContainer />
-            <p>
-              <strong>Congratulations {this.props.authData.name}!</strong> If
-              you're seeing this page, you've logged in with your own smart
-              contract successfully.
-            </p>
           </div>
         </div>{" "}
         <CampaignListContainer />

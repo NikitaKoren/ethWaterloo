@@ -4,7 +4,6 @@ import Columns from "grommet/components/Columns";
 import Card from "grommet/components/Card";
 
 const CampaignList = ({ loadAllCampaigns, items }) => {
-  console.log(Image);
   return items.length ? (
     <Columns size="small" justify="center">
       {items.map(item => {

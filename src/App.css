@@ -1,12 +1,14 @@
 /* PAGE */
 
 body,
-.pure-g [class*=pure-u] {
-  font-family: 'Open Sans', sans-serif;
+.pure-g [class*="pure-u"] {
+  font-family: "Open Sans", sans-serif;
 }
 
-h1, h2, h3 {
-  font-family: 'Oswald', 'Arial Narrow', sans-serif;
+h1,
+h2,
+h3 {
+  font-family: "Roboto", "Arial Narrow", sans-serif;
 }
 
 code {
@@ -39,8 +41,10 @@ code {
 .navbar {
   position: fixed;
   padding: 5px;
-  background: #0c1a2b;
-  font-family: 'Oswald', 'Arial Narrow', sans-serif;
+  background: #08448e;
+  font-family: "Roboto", "Arial Narrow", sans-serif;
+  font-size: 1.1em;
+  z-index: 100;
 }
 
 .navbar a {
