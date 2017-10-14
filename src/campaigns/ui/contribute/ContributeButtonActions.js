@@ -1,30 +1,28 @@
 import SmartAd from "../../../../build/contracts/SmartAd.json";
-import { browserHistory } from "react-router";
 import store from "../../../store";
 
 const contract = require("truffle-contract");
 
-export const USER_LOGGED_IN = "USER_LOGGED_IN";
-function userLoggedIn(user) {
+export const CAMPAIGN_INITIALIZED = "CAMPAIGN_INITIALIZED";
+function campaignInitialized(campaign) {
   return {
-    type: USER_LOGGED_IN,
-    payload: user
+    type: CAMPAIGN_INITIALIZED,
+    payload: campaign
   };
 }
 
-export function loginUser() {
+export function initializeCampaign(name = "") {
   let web3 = store.getState().web3.web3Instance;
 
   // Double-check web3's status.
   if (typeof web3 !== "undefined") {
     return function(dispatch) {
       // Using truffle-contract we create the authentication object.
-      const authentication = contract(SmartAd);
-      authentication.setProvider(web3.currentProvider);
+      const smartAd = contract(SmartAd);
+      smartAd.setProvider(web3.currentProvider);
 
       // Declaring this for later so we can chain functions on Authentication.
-      var authenticationInstance;
-
+      var smartAdInstance;
       // Get current ethereum wallet.
       web3.eth.getCoinbase((error, coinbase) => {
         // Log errors, if any.
@@ -32,37 +30,13 @@ export function loginUser() {
           console.error(error);
         }
 
-        authentication.deployed().then(function(instance) {
-          authenticationInstance = instance;
-
-          // Attempt to login user.
-          authenticationInstance
-            .login({ from: coinbase })
+        smartAd.deployed().then(function(instance) {
+          smartAdInstance = instance;
+          smartAdInstance
+            .initializeCampaign(name, { from: coinbase, gas: 900000 })
             .then(function(result) {
-              // If no error, login user.
-              var userName = web3.toUtf8(result);
-
-              dispatch(userLoggedIn({ name: userName }));
-
-              // Used a manual redirect here as opposed to a wrapper.
-              // This way, once logged in a user can still access the home page.
-              var currentLocation = browserHistory.getCurrentLocation();
-
-              if ("redirect" in currentLocation.query) {
-                return browserHistory.push(
-                  decodeURIComponent(currentLocation.query.redirect)
-                );
-              }
-
-              return browserHistory.push("/dashboard");
-            })
-            .catch(function(result) {
-              // If error, go to signup page.
-              console.error(
-                "Wallet " + coinbase + " does not have an account!"
-              );
-
-              return browserHistory.push("/signup");
+              console.log(smartAdInstance, result);
+              dispatch(campaignInitialized({ name }));
             });
         });
       });
