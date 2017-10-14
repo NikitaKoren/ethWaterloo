@@ -5,44 +5,44 @@ contract SmartAd {
     /***************************
      * Constatns/Variables
     ***************************/
-    uint constant fractionAdvertiser = 100000;
-    uint constant fractionViewer     = 1000000;
+    uint constant FRACTION_ADVERTISER = 100000;
+    uint constant FRACTION_VIEWER     = 1000000;
+    string constant DEFAULT_NAME      = "Default campaign name";
 
     struct Campaign {
+        address owner;
         bool active;
+        string name;
         uint balance;
-        mapping(address => Advertiser) advertisers;
+        mapping(address => Publisher) publishers;
     }
 
-    struct Advertiser {
+    struct Publisher {
+        bool onboarded;
         address[] clients;
     }
 
+    Campaign[] public campaign;
     /***************************
      * Mapping
     ***************************/
-    mapping(address => Campaign) public campaign;
+    //mapping(address => Campaign) public campaign;
 
     /***************************
      * Validation
     ***************************/
-    modifier enoughInitialFunds(uint clientRate, uint advertiserRate) {
-        require(msg.value >= (clientRate + advertiserRate));
+    modifier activeCampaign(uint id) {
+        require(campaign[id].active == true);
         _;
     }
 
-    modifier activeCampaign(address addr) {
-        require(campaign[addr].active == true);
+    modifier canPayoutViewer(uint id) {
+        require(campaign[id].balance >= FRACTION_VIEWER);
         _;
     }
 
-    modifier canPayoutViewer(address addr) {
-        require(campaign[addr].balance >= fractionViewer);
-        _;
-    }
-
-    modifier canPayoutAdv(address addr) {
-        require(campaign[addr].balance >= fractionAdvertiser);
+    modifier canPayoutAdv(uint id) {
+        require(campaign[id].balance >= FRACTION_ADVERTISER);
         _;
     }
 
@@ -51,34 +51,71 @@ contract SmartAd {
     ***************************/
     /// Method to initialzie a marketing campaign triggered by
     /// advertiser
-    function initializeCampaign()
+    function initializeCampaign(string cname)
              public
-             payable {
-        campaign[msg.sender].active  = true;
-        campaign[msg.sender].balance = msg.value;
+             payable
+             returns(uint) {
+        // Push new campaign to the array of campaigns
+        Campaign memory newCampaign;
+        newCampaign.owner   = msg.sender;
+        newCampaign.active  = true;
+        newCampaign.name    = bytes(cname).length != 0 ? cname : DEFAULT_NAME;
+        newCampaign.balance = msg.value;
+        campaign.push(newCampaign);
+        // Return the amount of campaigns
+        return campaign.length;
     }
 
     /// Method to register a view by client and pay out a fraction of
     /// fund to a publisher for hosting the add & code that runs it
-    function adView(address addr)
+    function adView(uint id)
              public
-             activeCampaign(addr)
-             canPayoutAdv(addr)
-             payable{
+             activeCampaign(id)
+             canPayoutAdv(id)
+             payable {
         // Payout funds to publisher
-        campaign[addr].balance -= fractionAdvertiser;
-        msg.sender.transfer(fractionAdvertiser);
+        campaign[id].balance -= FRACTION_ADVERTISER;
+        msg.sender.transfer(FRACTION_ADVERTISER);
     }
 
     /// Method to register am emgagement by client and pay out a fraction of
     /// fund to a client interacting with add
-    function adInteraction(address addr, address viewer)
+    function adInteraction(uint id, address viewer)
              public
-             activeCampaign(addr)
-             canPayoutViewer(addr)
-             payable{
+             activeCampaign(id)
+             canPayoutViewer(id)
+             payable {
         // Payout funds to publisher
-        campaign[addr].balance -= fractionViewer;
-        viewer.transfer(fractionViewer);
+        campaign[id].balance -= FRACTION_VIEWER;
+        viewer.transfer(FRACTION_VIEWER);
+    }
+
+    /// Method to onboard publisher, method is executed by owner
+    /// of the marketing campaign
+    function onboardPublisher(uint id, address publisher)
+             public
+             activeCampaign(id)
+             {
+        // Onboard the publisher
+        campaign[id].publishers[publisher].onboarded = true;
+    }
+
+    /// Method that returns all the indexes of campaigns
+    function getAllCampaings()
+             public
+             view
+             returns(uint) {
+        // Return last inserted index into storage
+        return campaign.length;
+    }
+
+    /// Get info of specific campaign
+    function getCampaign(uint id)
+             public
+             view
+             returns(uint, bool, string, uint) {
+        // Return span of variables that represent the specific
+        // marketing campaign
+        return(id, campaign[id].active, campaign[id].name, campaign[id].balance);
     }
 }
