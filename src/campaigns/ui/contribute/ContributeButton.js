@@ -27,10 +27,7 @@ const ContributeForm = ({ onClick, name, balance, change }) => {
       <FormField label="Campaign Balance (in eth)">
         <NumberInput onChange={e => change("balance", e.target.value)} />
       </FormField>
-      <Button
-        onClick={() => onClick({ balance, name })}
-        label="Init Campaign"
-      />
+      <Button onClick={() => onClick({ balance, name })} label="Add Campaign" />
     </Form>
   );
 };

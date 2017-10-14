@@ -1,13 +1,17 @@
 const initialState = {
-  data: null
+  data: null,
+  items: []
 };
 
 const campaignReducer = (state = initialState, action) => {
-  if (action.type === "CAMPAIGN_INITIALIZED") {
-    return { ...state, data: action.payload };
+  switch (action.type) {
+    case "CAMPAIGN_INITIALIZED":
+      return { ...state, items: state.items.concat(action.payload) };
+    case "CAMPAIGN_SETTED":
+      return { ...state, items: action.payload };
+    default:
+      return state;
   }
-
-  return state;
 };
 
 export default campaignReducer;

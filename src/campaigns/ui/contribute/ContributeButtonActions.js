@@ -16,7 +16,7 @@ export function initializeCampaign({ name = "", balance }) {
 
   // Double-check web3's status.
   if (typeof web3 !== "undefined") {
-    return function(dispatch) {
+    return function(dispatch, getState) {
       // Using truffle-contract we create the authentication object.
       const smartAd = contract(SmartAd);
       smartAd.setProvider(web3.currentProvider);
@@ -32,20 +32,22 @@ export function initializeCampaign({ name = "", balance }) {
 
         smartAd.deployed().then(function(instance) {
           smartAdInstance = instance;
-          console.log(name, {
-            from: coinbase,
-            value: balance,
-            gas: 900000
-          });
+          console.log(web3.toWei(balance, "ether"));
           smartAdInstance
             .initializeCampaign(name, {
               from: coinbase,
-              value: balance,
+              value: web3.toWei(balance, "ether"),
               gas: 900000
             })
-            .then(function(result) {
-              console.log(smartAdInstance, result);
-              dispatch(campaignInitialized({ name }));
+            .then(result => {
+              dispatch(
+                campaignInitialized({
+                  name,
+                  id: getState().campaigns.items.length,
+                  balance,
+                  active: true
+                })
+              );
             });
         });
       });
