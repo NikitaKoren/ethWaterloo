@@ -8,9 +8,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onClick: event => {
-      event.preventDefault();
-      dispatch(initializeCampaign());
+    onClick: payload => {
+      dispatch(initializeCampaign(payload));
     }
   };
 };

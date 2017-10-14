@@ -11,7 +11,7 @@ function campaignInitialized(campaign) {
   };
 }
 
-export function initializeCampaign(name = "") {
+export function initializeCampaign({ name = "", balance }) {
   let web3 = store.getState().web3.web3Instance;
 
   // Double-check web3's status.
@@ -32,8 +32,17 @@ export function initializeCampaign(name = "") {
 
         smartAd.deployed().then(function(instance) {
           smartAdInstance = instance;
+          console.log(name, {
+            from: coinbase,
+            value: balance,
+            gas: 900000
+          });
           smartAdInstance
-            .initializeCampaign(name, { from: coinbase, gas: 900000 })
+            .initializeCampaign(name, {
+              from: coinbase,
+              value: balance,
+              gas: 900000
+            })
             .then(function(result) {
               console.log(smartAdInstance, result);
               dispatch(campaignInitialized({ name }));
