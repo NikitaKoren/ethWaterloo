@@ -1,4 +1,4 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.15;
 
 contract SmartAd {
 
@@ -103,7 +103,7 @@ contract SmartAd {
     /// Method that returns all the indexes of campaigns
     function getAllCampaings()
              public
-             view
+             constant
              returns(uint) {
         // Return last inserted index into storage
         return campaign.length;
@@ -112,7 +112,7 @@ contract SmartAd {
     /// Get info of specific campaign
     function getCampaign(uint id)
              public
-             view
+             constant
              returns(uint, bool, string, uint) {
         // Return span of variables that represent the specific
         // marketing campaign
