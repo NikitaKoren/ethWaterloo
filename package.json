@@ -48,6 +48,7 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
+    "grommet": "^1.8.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
@@ -55,8 +56,10 @@
     "react-router-redux": "^4.0.7",
     "redux": "^3.6.0",
     "redux-auth-wrapper": "^1.0.0",
+    "redux-saga": "^0.15.6",
     "redux-thunk": "^2.2.0",
-    "truffle": "^4.0.0-beta.2"
+    "reduxsauce": "^0.7.0",
+    "seamless-immutable": "^7.1.2"
   },
   "scripts": {
     "start": "node scripts/start.js",
