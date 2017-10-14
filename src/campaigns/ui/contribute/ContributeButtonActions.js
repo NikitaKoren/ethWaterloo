@@ -48,6 +48,12 @@ export function initializeCampaign({ name = "", balance }) {
                   active: true
                 })
               );
+              const newBalance = getState().user.data.balance - balance;
+              console.log(newBalance);
+              dispatch({
+                type: "USER_UPDATED",
+                payload: { balance: newBalance }
+              });
             });
         });
       });

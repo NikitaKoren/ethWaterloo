@@ -44,7 +44,6 @@ class App extends Component {
             SmartAd
           </Link>
         </nav>
-
         {this.props.children}
       </div>
     );

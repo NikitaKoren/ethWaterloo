@@ -33,14 +33,15 @@ const ContributeForm = ({ onClick, name, balance, change, reset }) => {
         <FormField label="Campaign Balance (in eth)">
           <NumberInput onChange={e => change("balance", e.target.value)} />
         </FormField>
-        <Button
-          colorIndex="neutral-1"
-          onClick={() => {
-            onClick({ balance, name });
-            reset();
-          }}
-          label="Add Campaign"
-        />
+        <Box pad="medium">
+          <Button
+            onClick={() => {
+              onClick({ balance, name });
+              reset();
+            }}
+            label="Add Campaign"
+          />
+        </Box>
       </Form>
     </Box>
   );
