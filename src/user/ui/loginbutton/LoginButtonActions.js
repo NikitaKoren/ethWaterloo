@@ -31,7 +31,6 @@ export function loginUser() {
         if (error) {
           console.error(error);
         }
-
         authentication.deployed().then(function(instance) {
           authenticationInstance = instance;
 
