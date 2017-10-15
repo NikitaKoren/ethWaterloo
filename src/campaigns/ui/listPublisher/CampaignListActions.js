@@ -101,9 +101,9 @@ export function loadAllCampaigns() {
           console.error(error);
         }
         const smartAdInstance = await smartAd.deployed();
-        const ids = await smartAdInstance.getPublisherInvolvedCampaings({
-          from: coinbase
-        });
+        const ids = await smartAdInstance.getPublisherInvolvedCampaings(
+          coinbase
+        );
         const campaignsPromises = await ids.reverse().map(async id => {
           const res = await smartAdInstance.getCampaign(id);
           return res.reduce((prev, cur, i) => {

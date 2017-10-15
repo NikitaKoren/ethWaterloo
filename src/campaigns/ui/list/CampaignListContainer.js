@@ -1,18 +1,24 @@
 import { connect } from "react-redux";
 import CampaignList from "./CampaignList";
-import { loadAllCampaigns, deposit, withdraw } from "./CampaignListActions";
+import {
+  loadAllCampaigns,
+  deposit,
+  withdraw,
+  getIntoCampaign
+} from "./CampaignListActions";
 
 const mapStateToProps = (state, ownProps) => {
   return {
     items: state.campaigns.items,
-    showAll: ownProps.showAll
+    isMarketplace: ownProps.isMarketplace
   };
 };
 
 const mapDispatchToProps = {
   loadAllCampaigns,
   withdraw,
-  deposit
+  deposit,
+  getIntoCampaign
 };
 
 const CampaignListContainer = connect(mapStateToProps, mapDispatchToProps)(
