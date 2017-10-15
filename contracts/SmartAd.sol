@@ -17,6 +17,7 @@ contract SmartAd {
         bool active;
         string name;
         uint balance;
+        uint advDividends;
         mapping(address => Publisher) publishers;
     }
 
@@ -24,6 +25,8 @@ contract SmartAd {
      * Publisher participating in Campaign
     **/
     struct Publisher {
+        address owner;
+        uint dividends;
         bool onboarded;
         address[] clients;
     }
@@ -58,12 +61,17 @@ contract SmartAd {
     }
 
     modifier canPayoutAdv(uint id) {
-        require(campaigns[id].balance >= FRACTION_ADVERTISER);
+        require(campaigns[id].balance >= campaigns[id].advDividends);
         _;
     }
 
     modifier ownerOnly(uint id) {
         require(campaigns[id].owner == msg.sender);
+        _;
+    }
+
+    modifier publisherOnly(uint id) {
+        require(campaigns[id].publishers[msg.sender].owner == msg.sender);
         _;
     }
 
@@ -77,7 +85,7 @@ contract SmartAd {
     ***************************/
     /// Method to initialzie a marketing campaign triggered by
     /// advertiser
-    function initializeCampaign(string cname)
+    function initializeCampaign(string cname, uint payAdvertiser)
              public
              payable
              returns(uint) {
@@ -87,6 +95,7 @@ contract SmartAd {
         newCampaign.active  = true;
         newCampaign.name    = bytes(cname).length != 0 ? cname : DEFAULT_NAME;
         newCampaign.balance = msg.value;
+        newCampaign.advDividends = payAdvertiser != 0 ? payAdvertiser : FRACTION_ADVERTISER;
         campaigns.push(newCampaign);
         // Return the amount of campaigns
         return campaigns.length;
@@ -111,18 +120,28 @@ contract SmartAd {
     ***************************/
     /// Method to register a view by client and pay out a fraction of
     /// fund to a publisher for hosting the add & code that runs it
-    function adView(uint id)
+    function adClick(uint id)
              public
              activeCampaign(id)
-             canPayoutAdv(id)
-             payable {
-        // Payout funds to publisher
-        campaigns[id].balance -= FRACTION_ADVERTISER;
-        msg.sender.transfer(FRACTION_ADVERTISER);
+             canPayoutAdv(id) {
+        // Add funds to advertiser dividends under a certain campaign
+        campaigns[id].balance -= campaigns[id].advDividends;
+        campaigns[id].publishers[msg.sender].dividends += campaigns[id].advDividends;
+    }
+
+    /// Method that pays out funds to owner of publisher in a specific campaign
+    function getAdvertiserPayout(uint id)
+             public
+             publisherOnly(id) {
+        // Transfer money to publisher
+        campaigns[id].publishers[msg.sender].owner.transfer(campaigns[id].publishers[msg.sender].dividends);
+        // Flush current dividends balance
+        campaigns[id].publishers[msg.sender].dividends = 0;
     }
 
     /// Method to register am emgagement by client and pay out a fraction of
     /// fund to a client interacting with add
+    /*
     function adInteraction(uint id, address viewer)
              public
              activeCampaign(id)
@@ -132,6 +151,7 @@ contract SmartAd {
         campaigns[id].balance -= FRACTION_VIEWER;
         viewer.transfer(FRACTION_VIEWER);
     }
+    */
 
     /// Method to onboard publisher, executed by publisher
     function onboardPublisher(uint[] id)
@@ -139,7 +159,18 @@ contract SmartAd {
         // Onboard the publisher by iterating thru all selected campaigns to join
         for (uint i = 0; i < id.length; i++) {
             campaigns[id[i]].publishers[msg.sender].onboarded = true;
+            campaigns[id[i]].publishers[msg.sender].owner = msg.sender;
             publishersWork[msg.sender].push(id[i]);
+        }
+    }
+
+    /// Method to offboard publisher, executed by publisher
+    function offboardPublisher(uint[] id)
+             public {
+        // Onboard the publisher by iterating thru all selected campaigns to join
+        for (uint i = 0; i < id.length; i++) {
+            campaigns[id[i]].publishers[msg.sender].onboarded = false;
+            delete campaigns[id[i]].publishers[msg.sender];
         }
     }
 
@@ -148,7 +179,6 @@ contract SmartAd {
              public
              ownerOnly(id)
              enoughFunds(id, withdrawAmount)
-             payable
              returns (uint) {
         // Withdraw funds from balance
         campaigns[id].balance -= withdrawAmount;
