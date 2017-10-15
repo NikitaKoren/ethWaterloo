@@ -10,7 +10,7 @@ class Dashboard extends Component {
         <div className="pure-g">
           <div className="pure-u-1-1">
             <Heading align="center">Marketplace</Heading>
-            <CampaignListContainer showAll />
+            <CampaignListContainer isMarketplace />
           </div>
         </div>{" "}
       </main>

@@ -27,6 +27,24 @@ function updateCampaign(campaign) {
   };
 }
 
+export function getIntoCampaign(item) {
+  return async (dispatch, getState) => {
+    const web3 = getState().web3.web3Instance;
+    const smartAd = contract(SmartAd);
+    smartAd.setProvider(web3.currentProvider);
+    web3.eth.getCoinbase(async (error, coinbase) => {
+      // Log errors, if any.
+      if (error) {
+        console.error(error);
+      }
+      const smartAdInstance = await smartAd.deployed();
+      await smartAdInstance.onboardPublisher([item.id], {
+        from: coinbase
+      });
+    });
+  };
+}
+
 export function withdraw(id, amount) {
   return async function(dispatch, getState) {
     const web3 = getState().web3.web3Instance;
@@ -83,7 +101,7 @@ export function deposit(id, amount) {
     });
   };
 }
-export function loadAllCampaigns(showAll) {
+export function loadAllCampaigns(isMarketplace) {
   let web3 = store.getState().web3.web3Instance;
 
   // Double-check web3's status.
@@ -104,10 +122,18 @@ export function loadAllCampaigns(showAll) {
         const count = await smartAdInstance.getAllCampaings({
           from: coinbase
         });
+        const involvedIds = await smartAdInstance.getPublisherInvolvedCampaings(
+          {
+            from: coinbase
+          }
+        );
+        const ids = isMarketplace ? involvedIds.map(id => id.toNumber()) : [];
+        console.log(ids);
         const campaignsPromises = await [...Array(count.toNumber()).keys()]
           .reverse()
           .map(async id => {
-            const method = showAll ? "getCampaign" : "getOwnerCampaign";
+            const method = isMarketplace ? "getCampaign" : "getOwnerCampaign";
+            if (ids.includes(id)) return Promise.reject();
             const res = await smartAdInstance[method](id);
             return res.reduce((prev, cur, i) => {
               const { attr, value } = campaignStructureFormatters[i](cur, web3);
@@ -115,8 +141,14 @@ export function loadAllCampaigns(showAll) {
               return prev;
             }, {});
           });
-        const campaigns = await Promise.all(campaignsPromises);
-        dispatch(setCampaigns(campaigns));
+        console.log(campaignsPromises);
+
+        const FAIL_TOKEN = {};
+
+        const resolvedPromises = await Promise.all(
+          campaignsPromises.map(p => p.catch(e => FAIL_TOKEN))
+        ).then(values => values.filter(v => v !== FAIL_TOKEN));
+        dispatch(setCampaigns(resolvedPromises));
       });
     };
   } else {
