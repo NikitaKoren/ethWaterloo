@@ -4,8 +4,7 @@ import { loadAllCampaigns, deposit, withdraw } from "./CampaignListActions";
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    items: state.campaigns.items,
-    showAll: ownProps.showAll
+    items: state.campaigns.items
   };
 };
 

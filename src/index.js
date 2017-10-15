@@ -13,6 +13,7 @@ import getWeb3 from "./util/web3/getWeb3";
 import App from "./App";
 import Home from "./layouts/home/Home";
 import Dashboard from "./layouts/dashboard/Dashboard";
+import Marketplace from "./layouts/marketplace/Marketplace";
 import SignUp from "./user/layouts/signup/SignUp";
 import Profile from "./user/layouts/profile/Profile";
 import "grommet/scss/vanilla/index.scss";
@@ -31,7 +32,10 @@ getWeb3
   .catch(() => {
     console.log("Error in web3 initialization.");
   });
-
+const stringified = JSON.stringify(store.getState());
+store.subscribe(() => {
+  localStorage.setItem("reduxState", stringified);
+});
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
@@ -40,6 +44,10 @@ ReactDOM.render(
         <Route path="dashboard" component={UserIsAuthenticated(Dashboard)} />
         <Route path="signup" component={UserIsNotAuthenticated(SignUp)} />
         <Route path="profile" component={UserIsAuthenticated(Profile)} />
+        <Route
+          path="marketplace"
+          component={UserIsAuthenticated(Marketplace)}
+        />
       </Route>
     </Router>
   </Provider>,

@@ -83,7 +83,7 @@ export function deposit(id, amount) {
     });
   };
 }
-export function loadAllCampaigns(showAll) {
+export function loadAllCampaigns() {
   let web3 = store.getState().web3.web3Instance;
 
   // Double-check web3's status.
@@ -101,20 +101,17 @@ export function loadAllCampaigns(showAll) {
           console.error(error);
         }
         const smartAdInstance = await smartAd.deployed();
-        const count = await smartAdInstance.getAllCampaings({
+        const ids = await smartAdInstance.getPublisherInvolvedCampaings({
           from: coinbase
         });
-        const campaignsPromises = await [...Array(count.toNumber()).keys()]
-          .reverse()
-          .map(async id => {
-            const method = showAll ? "getCampaign" : "getOwnerCampaign";
-            const res = await smartAdInstance[method](id);
-            return res.reduce((prev, cur, i) => {
-              const { attr, value } = campaignStructureFormatters[i](cur, web3);
-              prev[attr] = value;
-              return prev;
-            }, {});
-          });
+        const campaignsPromises = await ids.reverse().map(async id => {
+          const res = await smartAdInstance.getCampaign(id);
+          return res.reduce((prev, cur, i) => {
+            const { attr, value } = campaignStructureFormatters[i](cur, web3);
+            prev[attr] = value;
+            return prev;
+          }, {});
+        });
         const campaigns = await Promise.all(campaignsPromises);
         dispatch(setCampaigns(campaigns));
       });

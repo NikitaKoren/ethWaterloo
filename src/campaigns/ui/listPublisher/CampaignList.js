@@ -23,7 +23,7 @@ const enhance = compose(
   ),
   lifecycle({
     componentWillMount() {
-      this.props.loadAllCampaigns(this.props.showAll);
+      this.props.loadAllCampaigns();
     }
   })
 );
