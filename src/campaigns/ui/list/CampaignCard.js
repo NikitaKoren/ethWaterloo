@@ -31,7 +31,9 @@ const CampaignCard = ({
   getIntoCampaign,
   isMarketplace,
   showControls,
-  user
+  user,
+  getAdvertiserPayout,
+  isPublisher
 }) => (
   <Card
     style={{ margin: 20 }}
@@ -51,6 +53,12 @@ const CampaignCard = ({
         )}{" "}
         {showControls && (
           <Box>
+            <Button
+              label="Give me my money"
+              onClick={() => {
+                getAdvertiserPayout(item.id);
+              }}
+            />
             <Button
               label="Add"
               onClick={() => {
@@ -72,19 +80,21 @@ const CampaignCard = ({
             />
           </Box>
         )}
-        <Accordion>
-          <AccordionPanel heading="Get embeded script">
-            <code>
-              {`<iframe
+        {isPublisher && (
+          <Accordion>
+            <AccordionPanel heading="Get embeded script">
+              <code>
+                {`<iframe
                 src=` +
-                `http://172.31.206.35:3000/ad?address=${window.web3.eth
-                  .coinbase}&id=${item.id}` +
-                `
+                  `http://172.31.206.35:3000/ad?address=${window.web3.eth
+                    .coinbase}&id=${item.id}` +
+                  `
                 style={{ width: "100%" }}
               />`}
-            </code>
-          </AccordionPanel>
-        </Accordion>
+              </code>
+            </AccordionPanel>
+          </Accordion>
+        )}
       </div>
     }
   />

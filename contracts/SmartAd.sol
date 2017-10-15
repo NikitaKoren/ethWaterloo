@@ -5,7 +5,7 @@ contract SmartAd {
     /***************************
      * Constatns/Variables
     ***************************/
-    uint constant FRACTION_ADVERTISER = 100000;
+    uint constant FRACTION_ADVERTISER = 1000000000000000000;
     uint constant FRACTION_VIEWER     = 1000000;
     string constant DEFAULT_NAME      = "Default campaign name";
 
@@ -125,8 +125,8 @@ contract SmartAd {
              activeCampaign(id)
              canPayoutAdv(id) {
         // Add funds to advertiser dividends under a certain campaign
-        campaigns[id].balance -= campaigns[id].advDividends;
-        campaigns[id].publishers[msg.sender].dividends += campaigns[id].advDividends;
+        campaigns[id].balance -= FRACTION_ADVERTISER;
+        campaigns[id].publishers[msg.sender].dividends += FRACTION_ADVERTISER;
     }
 
     /// Method that pays out funds to owner of publisher in a specific campaign
@@ -134,7 +134,7 @@ contract SmartAd {
              public
              publisherOnly(id) {
         // Transfer money to publisher
-        campaigns[id].publishers[msg.sender].owner.transfer(campaigns[id].publishers[msg.sender].dividends);
+        msg.sender.transfer(campaigns[id].publishers[msg.sender].dividends);
         // Flush current dividends balance
         campaigns[id].publishers[msg.sender].dividends = 0;
     }

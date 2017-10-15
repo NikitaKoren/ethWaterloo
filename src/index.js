@@ -16,7 +16,7 @@ import Dashboard from "./layouts/dashboard/Dashboard";
 import Marketplace from "./layouts/marketplace/Marketplace";
 import SignUp from "./user/layouts/signup/SignUp";
 import Profile from "./user/layouts/profile/Profile";
-import FuckingAd from "./Ad";
+import Ad from "./Ad";
 import "grommet/scss/vanilla/index.scss";
 
 // Redux Store
@@ -40,7 +40,7 @@ store.subscribe(() => {
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
-      <Route path="ad" component={FuckingAd} />
+      <Route path="ad" component={Ad} />
       <Route path="/" component={App}>
         <IndexRoute component={Home} />
         <Route path="dashboard" component={UserIsAuthenticated(Dashboard)} />

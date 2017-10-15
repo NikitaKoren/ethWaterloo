@@ -19,7 +19,8 @@ const CampaignList = ({
   reset,
   isMarketplace,
   getIntoCampaign,
-  showControls
+  showControls,
+  getAdvertiserPayout
 }) => {
   return items.length ? (
     <Columns size="small" justify="center">
@@ -33,6 +34,7 @@ const CampaignList = ({
             isMarketplace={isMarketplace}
             getIntoCampaign={getIntoCampaign}
             showControls={showControls}
+            getAdvertiserPayout={getAdvertiserPayout}
           />
         );
       })}

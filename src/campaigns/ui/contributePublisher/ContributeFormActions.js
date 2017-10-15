@@ -33,7 +33,7 @@ export function initializeCampaign({ name = "", balance }) {
         smartAd.deployed().then(function(instance) {
           smartAdInstance = instance;
           smartAdInstance
-            .initializeCampaign(name, {
+            .initializeCampaign(name, web3.toWei(0.01, "ether"), {
               from: coinbase,
               value: web3.toWei(balance, "ether"),
               gas: 100000

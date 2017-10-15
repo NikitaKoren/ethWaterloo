@@ -1,10 +1,6 @@
 import React from "react";
 import { lifecycle, compose } from "recompose";
 import Columns from "grommet/components/Columns";
-import Card from "grommet/components/Card";
-import Button from "grommet/components/Button";
-import TextInput from "grommet/components/TextInput";
-import Box from "grommet/components/Box";
 import { withStateHandlers } from "recompose";
 import CampaignCard from "../list/CampaignCard";
 
@@ -47,6 +43,7 @@ const CampaignList = ({
             item={item}
             deposit={deposit}
             withdraw={withdraw}
+            isPublisher
           />
         );
       })}

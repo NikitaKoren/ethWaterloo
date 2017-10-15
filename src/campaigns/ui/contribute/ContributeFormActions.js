@@ -40,7 +40,7 @@ export function initializeCampaign({ name = "", balance }) {
         smartAd.deployed().then(function(instance) {
           smartAdInstance = instance;
           smartAdInstance
-            .initializeCampaign(name, {
+            .initializeCampaign(name, web3.toWei(0.01, "ether"), {
               from: coinbase,
               value: web3.toWei(balance, "ether"),
               gas: 200000
@@ -103,8 +103,58 @@ export function wonderfulAction({ id, address }) {
           }, {});
           dispatch({ type: "WOW", payload: { item } });
         } else {
-          console.log("fuck");
+          alert("damn");
         }
+      });
+    };
+  }
+}
+
+export function adClick({ id, address }) {
+  let web3 = store.getState().web3.web3Instance;
+  // Double-check web3's status.
+  if (typeof web3 !== "undefined") {
+    return async function(dispatch) {
+      // Using truffle-contract we create the authentication object.
+      const smartAd = contract(SmartAd);
+      smartAd.setProvider(web3.currentProvider);
+      const smartAdInstance = await smartAd.deployed();
+      // Declaring this for later so we can chain functions on Authentication.
+      // Get current ethereum wallet.
+      web3.eth.getCoinbase(async (error, coinbase) => {
+        // Log errors, if any.
+        if (error) {
+          console.error(error);
+        }
+        console.log(smartAdInstance, coinbase, id);
+        const resp = await smartAdInstance.adClick(+id, { from: address });
+        console.log(resp);
+      });
+    };
+  }
+}
+
+export function getAdvertiserPayout({ id }) {
+  let web3 = store.getState().web3.web3Instance;
+  // Double-check web3's status.
+  if (typeof web3 !== "undefined") {
+    return async function(dispatch) {
+      // Using truffle-contract we create the authentication object.
+      const smartAd = contract(SmartAd);
+      smartAd.setProvider(web3.currentProvider);
+      const smartAdInstance = await smartAd.deployed();
+      // Declaring this for later so we can chain functions on Authentication.
+      // Get current ethereum wallet.
+      web3.eth.getCoinbase(async (error, coinbase) => {
+        // Log errors, if any.
+        if (error) {
+          console.error(error);
+        }
+        console.log(smartAdInstance, coinbase, id);
+        const resp = await smartAdInstance.getAdvertiserPayout(+id, {
+          from: coinbase
+        });
+        console.log(resp);
       });
     };
   }
