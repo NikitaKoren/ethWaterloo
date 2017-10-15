@@ -173,12 +173,12 @@ contract SmartAd {
      * Getters
     ***************************/
     /// Method to get a list of campaigns where publisher is participating
-    function getPublisherInvolvedCampaings()
+    function getPublisherInvolvedCampaings(address publisher)
              public
              constant
              returns(uint[]) {
         // List of campaigns where publisher is involved in
-        return publishersWork[msg.sender];
+        return publishersWork[publisher];
     }
 
     /// Method that returns all the indexes of campaigns
@@ -257,5 +257,4 @@ contract SmartAd {
         // Set the active state to the parameter passed
         adSlots[id].active = state;
     }
-
 }
