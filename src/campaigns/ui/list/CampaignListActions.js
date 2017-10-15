@@ -122,13 +122,13 @@ export function loadAllCampaigns(isMarketplace) {
         const count = await smartAdInstance.getAllCampaings({
           from: coinbase
         });
-        const involvedIds = await smartAdInstance.getPublisherInvolvedCampaings(
-          {
-            from: coinbase
-          }
-        );
-        const ids = isMarketplace ? involvedIds.map(id => id.toNumber()) : [];
-        console.log(ids);
+        let ids = [];
+        if (isMarketplace) {
+          const involvedIds = await smartAdInstance.getPublisherInvolvedCampaings(
+            coinbase
+          );
+          ids = involvedIds.map(id => id.toNumber());
+        }
         const campaignsPromises = await [...Array(count.toNumber()).keys()]
           .reverse()
           .map(async id => {
@@ -141,7 +141,6 @@ export function loadAllCampaigns(isMarketplace) {
               return prev;
             }, {});
           });
-        console.log(campaignsPromises);
 
         const FAIL_TOKEN = {};
 
