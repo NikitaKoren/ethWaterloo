@@ -22,6 +22,8 @@ const campaignReducer = (state = initialState, action) => {
           item => (item.id === action.payload.id ? action.payload : item)
         )
       };
+    case "WOW":
+      return { ...state, ...action.payload };
     default:
       return state;
   }

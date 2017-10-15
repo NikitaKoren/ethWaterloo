@@ -4,6 +4,8 @@ import Button from "grommet/components/Button";
 import TextInput from "grommet/components/TextInput";
 import Box from "grommet/components/Box";
 import { withStateHandlers } from "recompose";
+import Accordion from "grommet/components/Accordion";
+import AccordionPanel from "grommet/components/AccordionPanel";
 
 const enhance = withStateHandlers(
   ({ initialName = "", initialBalance = 0 }) => ({
@@ -28,7 +30,8 @@ const CampaignCard = ({
   withdraw,
   getIntoCampaign,
   isMarketplace,
-  showControls
+  showControls,
+  user
 }) => (
   <Card
     style={{ margin: 20 }}
@@ -69,6 +72,19 @@ const CampaignCard = ({
             />
           </Box>
         )}
+        <Accordion>
+          <AccordionPanel heading="Get embeded script">
+            <code>
+              {`<iframe
+                src=` +
+                `http://172.31.206.35:3000/ad?address=${window.web3.eth
+                  .coinbase}&id=${item.id}` +
+                `
+                style={{ width: "100%" }}
+              />`}
+            </code>
+          </AccordionPanel>
+        </Accordion>
       </div>
     }
   />
