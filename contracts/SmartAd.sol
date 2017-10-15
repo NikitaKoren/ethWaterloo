@@ -5,7 +5,7 @@ contract SmartAd {
     /***************************
      * Constatns/Variables
     ***************************/
-    uint constant FRACTION_ADVERTISER = 1000000000000000000;
+    uint constant FRACTION_ADVERTISER = 100000000;
     uint constant FRACTION_VIEWER     = 1000000;
     string constant DEFAULT_NAME      = "Default campaign name";
 

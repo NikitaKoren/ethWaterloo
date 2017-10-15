@@ -54,12 +54,6 @@ const CampaignCard = ({
         {showControls && (
           <Box>
             <Button
-              label="Give me my money"
-              onClick={() => {
-                getAdvertiserPayout(item.id);
-              }}
-            />
-            <Button
               label="Add"
               onClick={() => {
                 reset();
@@ -81,19 +75,27 @@ const CampaignCard = ({
           </Box>
         )}
         {isPublisher && (
-          <Accordion>
-            <AccordionPanel heading="Get embeded script">
-              <code>
-                {`<iframe
+          <Box>
+            <Button
+              label="Give me my money"
+              onClick={() => {
+                getAdvertiserPayout(item.id);
+              }}
+            />
+            <Accordion>
+              <AccordionPanel heading="Get embeded script">
+                <code>
+                  {`<iframe
                 src=` +
-                  `http://172.31.206.35:3000/ad?address=${window.web3.eth
-                    .coinbase}&id=${item.id}` +
-                  `
+                    `http://172.31.204.36:3000/ad?address=${window.web3.eth
+                      .coinbase}&id=${item.id}` +
+                    `
                 style={{ width: "100%" }}
               />`}
-              </code>
-            </AccordionPanel>
-          </Accordion>
+                </code>
+              </AccordionPanel>
+            </Accordion>
+          </Box>
         )}
       </div>
     }

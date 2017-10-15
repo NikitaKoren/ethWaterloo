@@ -36,7 +36,7 @@ export function initializeCampaign({ name = "", balance }) {
             .initializeCampaign(name, web3.toWei(0.01, "ether"), {
               from: coinbase,
               value: web3.toWei(balance, "ether"),
-              gas: 100000
+              gas: 150000
             })
             .then(result => {
               dispatch(

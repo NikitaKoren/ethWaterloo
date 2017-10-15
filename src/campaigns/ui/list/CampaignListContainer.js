@@ -6,7 +6,6 @@ import {
   withdraw,
   getIntoCampaign
 } from "./CampaignListActions";
-import { getAdvertiserPayout } from "../contribute/ContributeFormActions";
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -19,8 +18,7 @@ const mapDispatchToProps = {
   loadAllCampaigns,
   withdraw,
   deposit,
-  getIntoCampaign,
-  getAdvertiserPayout
+  getIntoCampaign
 };
 
 const CampaignListContainer = connect(mapStateToProps, mapDispatchToProps)(

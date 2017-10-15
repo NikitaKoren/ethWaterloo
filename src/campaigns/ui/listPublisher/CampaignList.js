@@ -32,7 +32,8 @@ const CampaignList = ({
   deposit,
   amount,
   change,
-  reset
+  reset,
+  getAdvertiserPayout
 }) => {
   return items.length ? (
     <Columns size="small" justify="center">
@@ -44,6 +45,7 @@ const CampaignList = ({
             deposit={deposit}
             withdraw={withdraw}
             isPublisher
+            getAdvertiserPayout={getAdvertiserPayout}
           />
         );
       })}

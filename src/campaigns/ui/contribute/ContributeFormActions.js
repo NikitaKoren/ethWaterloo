@@ -43,7 +43,7 @@ export function initializeCampaign({ name = "", balance }) {
             .initializeCampaign(name, web3.toWei(0.01, "ether"), {
               from: coinbase,
               value: web3.toWei(balance, "ether"),
-              gas: 200000
+              gas: 150000
             })
             .then(result => {
               dispatch(
@@ -134,7 +134,7 @@ export function adClick({ id, address }) {
   }
 }
 
-export function getAdvertiserPayout({ id }) {
+export function getAdvertiserPayout(id) {
   let web3 = store.getState().web3.web3Instance;
   // Double-check web3's status.
   if (typeof web3 !== "undefined") {

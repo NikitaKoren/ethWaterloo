@@ -1,6 +1,7 @@
 import { connect } from "react-redux";
 import CampaignList from "./CampaignList";
 import { loadAllCampaigns, deposit, withdraw } from "./CampaignListActions";
+import { getAdvertiserPayout } from "../contribute/ContributeFormActions";
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -11,7 +12,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = {
   loadAllCampaigns,
   withdraw,
-  deposit
+  deposit,
+  getAdvertiserPayout
 };
 
 const CampaignListContainer = connect(mapStateToProps, mapDispatchToProps)(

@@ -33,8 +33,8 @@ getWeb3
   .catch(() => {
     console.log("Error in web3 initialization.");
   });
-const stringified = JSON.stringify(store.getState());
 store.subscribe(() => {
+  const stringified = JSON.stringify(store.getState());
   localStorage.setItem("reduxState", stringified);
 });
 ReactDOM.render(
