@@ -15,6 +15,11 @@ const LogoutButton = ({ onLogoutUserClick, name, balance }) => {
         </Link>
       </li>
       <li className="pure-menu-item">
+        <Link to="/marketplace" className="pure-menu-link">
+          Marketplace
+        </Link>
+      </li>
+      <li className="pure-menu-item">
         <Link to="/profile" className="pure-menu-link">
           Profile
         </Link>

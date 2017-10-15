@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import ContributeForm from "./ContributeForm";
-import { initializeCampaign } from "./ContributeButtonActions";
+import { initializeCampaign } from "./ContributeFormActions";
 
 const mapStateToProps = (state, ownProps) => {
   return {};

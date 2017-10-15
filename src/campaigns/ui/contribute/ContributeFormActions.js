@@ -32,12 +32,11 @@ export function initializeCampaign({ name = "", balance }) {
 
         smartAd.deployed().then(function(instance) {
           smartAdInstance = instance;
-          console.log(web3.toWei(balance, "ether"));
           smartAdInstance
             .initializeCampaign(name, {
               from: coinbase,
               value: web3.toWei(balance, "ether"),
-              gas: 900000
+              gas: 200000
             })
             .then(result => {
               dispatch(

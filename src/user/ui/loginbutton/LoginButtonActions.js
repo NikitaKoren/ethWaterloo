@@ -1,5 +1,6 @@
 import AuthenticationContract from "../../../../build/contracts/Authentication.json";
 import { browserHistory } from "react-router";
+
 import store from "../../../store";
 
 const contract = require("truffle-contract");
@@ -31,26 +32,25 @@ export function loginUser() {
         if (error) {
           console.error(error);
         }
-
         authentication.deployed().then(function(instance) {
           authenticationInstance = instance;
-
           // Attempt to login user.
           authenticationInstance
             .login({ from: coinbase })
             .then(async result => {
               // If no error, login user.
-              var userName = web3.toUtf8(result);
-              const balance = await web3.eth.getBalance(coinbase);
-              dispatch(
-                userLoggedIn({
-                  name: userName,
-                  balance: web3
-                    .fromWei(balance, "ether")
-                    .toFixed(5)
-                    .toString()
-                })
-              );
+              const userName = web3.toUtf8(result);
+              await web3.eth.getBalance(coinbase, function(error, balance) {
+                dispatch(
+                  userLoggedIn({
+                    name: userName,
+                    balance: web3
+                      .fromWei(balance, "ether")
+                      .toFixed(5)
+                      .toString()
+                  })
+                );
+              });
 
               // Used a manual redirect here as opposed to a wrapper.
               // This way, once logged in a user can still access the home page.
@@ -63,15 +63,15 @@ export function loginUser() {
               }
 
               return browserHistory.push("/dashboard");
-            })
-            .catch(function(result) {
-              // If error, go to signup page.
-              console.error(
-                "Wallet " + coinbase + " does not have an account!"
-              );
-
-              return browserHistory.push("/signup");
             });
+          // .catch(function(result) {
+          //   // If error, go to signup page.
+          //   console.error(
+          //     "Wallet " + coinbase + " does not have an account!"
+          //   );
+
+          //   return browserHistory.push("/signup");
+          // });
         });
       });
     };

@@ -15,6 +15,13 @@ const campaignReducer = (state = initialState, action) => {
       };
     case "CAMPAIGN_SETTED":
       return { ...state, items: action.payload };
+    case "UPDATE_CAMPAIGN":
+      return {
+        ...state,
+        items: state.items.map(
+          item => (item.id === action.payload.id ? action.payload : item)
+        )
+      };
     default:
       return state;
   }
